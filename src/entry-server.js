@@ -1,11 +1,14 @@
 import { createApp } from './main'
-
+// context:地址 context = req.url  {url: /page1}
+// 每次访问时都会执行context => {}这个方法
 export default context => {
+  // promise
   return new Promise((resolve, reject) => {
     const { app, router, store } = createApp()
-
+    // 让router-view里的内容变成page1的内容
+    // 为什么每次都要创建新实例。路由的当前状态只能是一个，不同的人访问不同的路由时，如果只有一个实例，router-view里不知道要显示哪个页面。
     router.push(context.url)
-
+    // 跳转完成，将实例返回
     router.onReady(() => {
       const matchedComponents = router.getMatchedComponents()
       if (!matchedComponents.length) {
