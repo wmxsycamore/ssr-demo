@@ -5,6 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build:client": "webpack --config buildConfig/webpack.client.config.js",
+    "build:server": "webpack --config buildConfig/webpack.server.config.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
