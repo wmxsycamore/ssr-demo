@@ -12,5 +12,6 @@ server.get('*', (req, res) => {
   renderer.renderToString(app, (err, html) => {
     // 处理错误……
     res.end(html)
+  
   })
 })
