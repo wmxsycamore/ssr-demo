@@ -1,14 +1,16 @@
 const vue = require('vue')
-const server = require('express')()
-const { createBundleRenderer } = renderer('vue-server-renderer')
+const express = require('express');
+const server = express()
+const { createBundleRenderer } = require('vue-server-renderer')
 const fs = require('fs')
 const path = require('path')
 
-const serverBundle = require(path.resolve(__dirname, '/dist/vue-ssr-server-bundle.json'));
-const clientManifest = require(path.resolve(__dirname, '/dist/vue-ssr-client-manifest.json'));
+const serverBundle = require(path.resolve(process.cwd(), 'serverDist', 'vue-ssr-server-bundle.json'));
+const clientManifestPath = path.resolve(process.cwd(), 'dist', 'vue-ssr-client-manifest.json');
+const clientManifest = JSON.parse(fs.readFileSync(clientManifestPath, 'utf-8'));
 // html文件不是模块化的，所有只能fs读取文件的方式读取
-const template = fs.readFileSync(path.resolve(__dirname, './index.html'), 'utf-8')
-
+const template = fs.readFileSync(path.resolve(__dirname,'index.html'), 'utf-8')
+server.use(express.static(path.resolve(process.cwd(), 'dist')));
 // renderer:生成vue实例
 const renderer = createBundleRenderer(serverBundle, {
   runInNewContext: false,
