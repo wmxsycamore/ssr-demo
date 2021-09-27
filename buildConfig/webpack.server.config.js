@@ -1,32 +1,37 @@
-const path = require('path')
-const webpack = require('webpack')
-const merge = require('webpack-merge')
-const base = require('./webpack.base.config')
+
+
 const nodeExternals = require('webpack-node-externals')
 
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 
-module.exports = merge(base, {
-    target: 'node', // 运行在node端，所以指定打包目标（webpack,不写默认以浏览器标准）
-    // devtool: '#source-map',
-    entry: './src/server-entry.js',
-    output: {
-        filename: 'server-bundle.js',
-        libraryTarget: 'commonjs2' // 使用commonjs规范
+module.exports = {
+    css: {
+        // 不提取 CSS
+        extract: false
     },
-    // resolve: {
-    //     alias: {
-    //         'create-api': './create-api-server.js'
-    //     }
-    // },
-    // externals: nodeExternals({
-    //     whitelist: /\.css$/
-    // }),
-    plugins: [
-        // new webpack.DefinePlugin({
-        //     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-        //     'process.env.VUE_ENV': '"server"'
-        // }),
-        new VueSSRServerPlugin()
-    ]
-})
+    outputDir: 'serverDist',
+    configureWebpack: () => ({
+        // 服务器入口文件
+        entry: `./src/server-entry.js`,
+        devtool: 'source-map',
+        // 构建目标为nodejs环境
+        target: 'node', // 运行在node端，所以指定打包目标（webpack,不写默认以浏览器标准）
+        output: {
+            filename: 'server-bundle.js',
+            // 构建目标加载模式 commonjs
+            libraryTarget: 'commonjs2',
+        },
+        // 跳过 node_mdoules，运行时会自动加载，不需要编译
+        externals: nodeExternals({
+            // 允许css文件，方便css module
+            allowlist: [/\.css$/]
+        }),
+        // 关闭代码切割
+        optimization: {
+            splitChunks: false
+        },
+        plugins: [
+            new VueSSRServerPlugin()
+        ]
+    })
+}
